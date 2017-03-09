@@ -1,9 +1,11 @@
 import api.IAdmin;
 import api.core.impl.Admin;
+import api.core.impl.Student;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Vincent on 23/2/2017.
@@ -11,10 +13,12 @@ import static org.junit.Assert.*;
 public class TestExample {
 
     private IAdmin admin;
+    private Student student;
 
     @Before
     public void setup() {
         this.admin = new Admin();
+        this.student = new Student();
     }
 
     @Test
@@ -50,6 +54,23 @@ public class TestExample {
         assertFalse(no_of_courses > 2);
     }
 
+    @Test
+    public void testUnique() {
+        this.admin.createClass("Test", 2017, "Devanbu", 30);
+        this.admin.createClass("Test", 2017, "Davis", 30);
+        assertFalse(this.admin.getClassInstructor("Test", 2017).equals("Davis"));
+    }
+
+    @Test
+    public void testChange() {
+        this.admin.createClass("60", 2017, "Devanbu", 50);
+        this.student.registerForClass("Tom", "60", 2017);
+        this.student.registerForClass("Nick", "60", 2017);
+        this.student.registerForClass("Tim", "60", 2017);
+        this.student.registerForClass("Kevin", "60", 2017);
+        this.admin.changeCapacity("60", 2017, 1);
+        assertFalse(this.admin.classExists("60", 2017));
+    }
 
 }
 
